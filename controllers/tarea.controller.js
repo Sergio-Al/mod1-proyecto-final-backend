@@ -75,10 +75,12 @@ const actualizarTarea = async (req, res) => {
 }
 
 const eliminarTarea = async (req, res) => {
+  console.log('WORKING!!!', req.params)
   const { id } = req.params;
 
   try {
-    const tarea = await Tarea.findByPk(id);
+    console.log("mytask", id)
+    const tarea = await Tarea.findByPk(id)
 
     if (!tarea) {
       return res.status(404).json({ message: 'Tarea no encontrada' });

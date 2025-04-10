@@ -33,7 +33,6 @@ const authMiddleware = async (req, res, next) => {
     
     // Adicionar el usuario al objeto de solicitud para que esté disponible en las siguientes rutas
     req.usuario = usuario;
-    req.params.id = usuario.id;
     
     // Continuar con la siguiente función de middleware
     next();
