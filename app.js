@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -12,7 +13,7 @@ const tareasRouter = require('./routes/tareas');
 var app = express();
 // adding cors
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true // Allow credentials (cookies, authorization headers, etc.)
 }));
