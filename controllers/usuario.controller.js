@@ -13,7 +13,7 @@ const generateToken = (usuario) => {
   return jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
-}
+};
 
 const crearUsuario = async (req, res) => {
   // En este paso se validan los datos de entrada
@@ -35,25 +35,28 @@ const crearUsuario = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const nuevoUsuario = await Usuario.create({
+    const datosNuevoUsuario = {
       name,
       email,
       password: hashedPassword,
-    });
+    };
+
+    const nuevoUsuario = await Usuario.create(datosNuevoUsuario);
 
     const token = generateToken(nuevoUsuario);
 
+    // Excluir la contraseña del objeto de usuario
+    datosNuevoUsuario.password = undefined;
+
     res.status(201).json({
-      ...nuevoUsuario,
-      token
+      ...datosNuevoUsuario,
+      token,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al crear el usuario" });
   }
-}
-
-
+};
 
 const loginUsuario = async (req, res) => {
   const { email, password } = req.body;
@@ -80,7 +83,7 @@ const loginUsuario = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Error al iniciar sesión" });
   }
-}
+};
 
 const obtenerUsuario = async (req, res) => {
   const { id } = req.usuario.dataValues;
@@ -89,7 +92,7 @@ const obtenerUsuario = async (req, res) => {
     const usuario = await Usuario.findByPk(id, {
       include: [
         {
-          model: Tarea
+          model: Tarea,
         },
       ],
     });
@@ -100,13 +103,13 @@ const obtenerUsuario = async (req, res) => {
 
     // Excluir la contraseña del objeto de usuario
     usuario.password = undefined;
-    
+
     res.json(usuario);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al obtener el usuario" });
   }
-}
+};
 
 module.exports = {
   crearUsuario,

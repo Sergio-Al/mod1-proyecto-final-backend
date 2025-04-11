@@ -11,6 +11,14 @@ var usersRouter = require("./routes/users");
 const tareasRouter = require("./routes/tareas");
 
 var app = express();
+
+// CORS debugging
+app.use((req, res, next) => {
+  console.log("CORS ORIGIN:", process.env.CORS_ORIGIN);
+  console.log("Origin:", req.headers.origin);
+  next();
+});
+
 // adding cors
 app.use(
   cors({

@@ -20,7 +20,7 @@ const crearTarea = async (req, res) => {
 };
 
 const obtenerTareas = async (req, res) => {
-  const { status, search } = req.query;
+  const { status, search, date } = req.query;
   const where = {
     usuarioId: req.usuario.id, // Filtrar por el ID del usuario
   };
@@ -31,6 +31,15 @@ const obtenerTareas = async (req, res) => {
   if (search) {
     where.titulo = {
       [Op.like]: `%${search}%`,
+    };
+  }
+
+  if (date) {
+    const fechaLimite = new Date(date);
+    console.log(date, fechaLimite)
+    where.fecha_limite = {
+      // Filtrar por fecha exacta sin hora
+      [Op.eq]: fechaLimite,
     };
   }
 
@@ -55,6 +64,10 @@ const obtenerTareaPorId = async (req, res) => {
 
     if (!tarea) {
       return res.status(404).json({ message: "Tarea no encontrada" });
+    }
+
+    if (tarea.usuarioId !== req.usuario.id) {
+      return res.status(403).json({ message: "No tienes permiso para ver esta tarea" });
     }
 
     res.status(200).json(tarea);
